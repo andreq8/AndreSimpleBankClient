@@ -1,0 +1,45 @@
+﻿@page "/register"
+@using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Base
+@inject UsersService _usersService
+
+
+<h3>Register</h3>
+<p> todo form to register user</p>
+<EditForm Model="@userRequest" OnSubmit="@SubmitForm"> 
+    <p>
+        <label>
+            Email :
+            <InputText @bind-Value="userRequest.Email"/>
+        </label>
+    </p>
+    <p>
+        <label>
+            Password : 
+            <InputText @bind-Value="userRequest.Password"/>
+        </label>
+    </p>
+    <p>
+        <label>
+            Username : 
+            <InputText @bind-Value="userRequest.UserName"/>
+        </label>
+    </p>
+    <p>
+        <label>
+            Full Name : 
+            <InputText @bind-Value="userRequest.FullName"/>
+        </label>
+    </p>
+    <button type="submit">Register User </button>
+
+</EditForm>
+
+@code {
+    private CreateUserRequest userRequest= new();
+
+    public async Task SubmitForm()
+    {
+        await _usersService.RegisterUser(userRequest);        
+    }
+}

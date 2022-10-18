@@ -1,0 +1,34 @@
+﻿@page "/accounts"
+@using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Base
+@inject AccountsService _accountsService
+
+<button @onclick="GetAccounts"> Get Accounts</button>
+
+<ul>
+    @if(accounts != null)
+    {
+        @foreach(AccountResponse account in accounts)
+        {
+            <li>@account.Id</li>
+            <li>@account.Balance</li>
+            <li>@account.Currency</li>
+            <li>@account.CreatedAt</li>
+            <li></li>
+        }
+       
+    }
+</ul>
+
+@code {
+    public List<AccountResponse> accounts { get; set; } = new List<AccountResponse>();
+
+    public async Task GetAccounts()
+    {
+        var response = await _accountsService.GetAllAccounts();
+        foreach(AccountResponse account in response)
+        {
+            accounts.Add(account);
+        }
+    }
+}

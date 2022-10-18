@@ -1,0 +1,38 @@
+﻿@page "/login"
+@using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Base
+@inject UsersService _usersService
+
+<h3>Login</h3>
+
+<EditForm Model="@loginUser" OnSubmit="@LoginMethod"> 
+    <p>
+        <label>
+            Username :
+            <InputText @bind-Value="loginUser.Username"/>
+        </label>
+    </p>
+    <p>
+        <label>
+            Password : 
+            <InputText @bind-Value="loginUser.Password"/>
+        </label>
+    </p>
+    <button type="submit">Login </button>
+
+</EditForm>
+
+
+@code {
+    public LoginUserRequest loginUser { get; set; } = new();
+
+    public async Task LoginMethod()
+    {
+        var response = await _usersService.Login(loginUser);
+        var prefix = "Bearer";
+        var token = response.AccessToken;
+        var accessToken = String.Join(" ",prefix ,  token);
+        
+    }
+
+}
