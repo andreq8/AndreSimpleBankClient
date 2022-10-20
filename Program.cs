@@ -12,6 +12,8 @@ builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<AccountsService>();
 builder.Services.AddTransient<IClient, Client>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7268/") });
+builder.Services.AddLocalization();
+
 
 
 var app = builder.Build();
@@ -32,5 +34,15 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+//app.UseRequestLocalization(new RequestLocalizationOptions()
+//    .AddSupportedCultures(new[] { "en-US", "pt-PT" })
+//    .AddSupportedUICultures(new[] { "en-US", "pt-PT" }));
 
+var supportedCultures = new[] { "en-US", "pt-PT" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 app.Run();

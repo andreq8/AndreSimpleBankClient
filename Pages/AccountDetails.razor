@@ -1,5 +1,6 @@
 ﻿@using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
+@inject IStringLocalizer<AccountDetails> Loc
 
 @page "/account/{id:int}"
 
@@ -14,8 +15,8 @@
     </ul>
 
     <tr class="row">
-        <th class="col-6 align-content-center">Date</th>
-        <th class="col-6 justify-content-between">Amount</th>
+        <th class="col-6 align-content-center">@Loc["CollumnDate"]</th>
+        <th class="col-6 justify-content-between">@Loc["CollumnAmount"]</th>
     </tr>
     foreach(Movim movim in account.Movims)
     {
