@@ -11,7 +11,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<AccountsService>();
 builder.Services.AddTransient<IClient, Client>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7268") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7268/") });
 
 
 var app = builder.Build();

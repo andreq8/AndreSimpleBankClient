@@ -17,8 +17,14 @@ namespace OpenBankClient.Data.Services
             var auth = await _localStorage.GetAsync<string>("token");
             var token = String.Join(" ", "Bearer", auth.Value);
             var response = await _httpClient.AccountsAllAsync(token);
-            Console.WriteLine(response.ToString());
             //await _httpClient.PostAsJsonAsync("/api/v1/users", user);
+            return response;
+        }
+        public async Task<GetAccountResponse> GetAccountDetails(int id)
+        {
+            var auth = await _localStorage.GetAsync<string>("token");
+            var token = String.Join(" ", "Bearer", auth.Value);
+            var response = await _httpClient.AccountsGETAsync(id, token);
             return response;
         }
 

@@ -3,8 +3,8 @@
 <PageTitle>OpenBankClient</PageTitle>
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
+    <div class="@SideBarCssClass">
+        <NavMenu OnHideMenu="@HideMenu"/>
     </div>
 
     <main>
@@ -17,3 +17,15 @@
         </article>
     </main>
 </div>
+
+@code{
+    public bool hideMenu { get; set; } = false;
+
+    private string? SideBarCssClass => hideMenu ? "smallSidebar" : "sidebar";
+
+
+    public void HideMenu()
+    {
+        hideMenu = !hideMenu;
+    }
+}

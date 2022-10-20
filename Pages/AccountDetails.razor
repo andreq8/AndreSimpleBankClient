@@ -1,0 +1,44 @@
+﻿@using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Base
+
+@page "/account/{id:int}"
+
+@inject AccountsService _accountService
+
+@if (account != null)
+{
+    <ul>
+        <li>@account.Account.Id</li>
+        <li>@account.Account.Balance @account.Account.Currency</li>
+        <li>@account.Account.CreatedAt.DateTime</li>
+    </ul>
+
+    <tr class="row">
+        <th class="col-6 align-content-center">Date</th>
+        <th class="col-6 justify-content-between">Amount</th>
+    </tr>
+    foreach(Movim movim in account.Movims)
+    {
+        <tr class="row">
+            <td class="col-6">@movim.CreatedAt.DateTime</td>
+            <td class="col-6">@movim.Amount</td>
+        </tr>
+        
+    }
+
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private GetAccountResponse? account;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        account = await _accountService.GetAccountDetails(id);
+        StateHasChanged();
+
+    }
+
+}

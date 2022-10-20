@@ -254,7 +254,7 @@ namespace OpenBankClient.Data.Services.Base
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AccountResponse>> AccountsAllAsync(string authorization, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("/api/v1/Accounts");
+            urlBuilder_.Append("api/v1/Accounts");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1309,9 +1309,9 @@ namespace OpenBankClient.Data.Services.Base
     public enum Currency
     {
 
-        _0 = 0,
+        EUR = 0,
 
-        _1 = 1,
+        DOL = 1,
 
     }
 

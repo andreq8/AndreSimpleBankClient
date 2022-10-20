@@ -2,6 +2,7 @@
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject UsersService _usersService
+@inject NavigationManager Navigation
 
 <h3>Login</h3>
 
@@ -29,10 +30,9 @@
     public async Task LoginMethod()
     {
         var response = await _usersService.Login(loginUser);
-        var prefix = "Bearer";
-        var token = response.AccessToken;
-        var accessToken = String.Join(" ",prefix ,  token);
-        
+        if (response == null)
+            return;
+        Navigation.NavigateTo("/accounts");
     }
 
 }

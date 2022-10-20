@@ -2,6 +2,7 @@
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject AccountsService _accountsService
+@inject ILogger<Accounts> _logger
 
 <button @onclick="GetAccounts"> Get Accounts</button>
 
@@ -10,25 +11,37 @@
     {
         @foreach(AccountResponse account in accounts)
         {
-            <li>@account.Id</li>
-            <li>@account.Balance</li>
-            <li>@account.Currency</li>
-            <li>@account.CreatedAt</li>
-            <li></li>
+            <li><a href="account/@account.Id">@account.Id</a></li>
+            <li>@account.Balance  @account.Currency</li>
+            <li>@account.CreatedAt.DateTime</li>
         }
        
     }
 </ul>
 
 @code {
-    public List<AccountResponse> accounts { get; set; } = new List<AccountResponse>();
+    private List<AccountResponse>? accounts;
+
+    //protected async override Task OnInitializedAsync()
+    //{
+    //    _logger.LogInformation("On initialized");
+    //    accounts = (List<AccountResponse>)await _accountsService.GetAllAccounts();
+    //}
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+        var response = await _accountsService.GetAllAccounts();
+
+        accounts = (List<AccountResponse>)response;
+        _logger.LogInformation("after renderer");
+        StateHasChanged();
+
+    }
 
     public async Task GetAccounts()
     {
-        var response = await _accountsService.GetAllAccounts();
-        foreach(AccountResponse account in response)
-        {
-            accounts.Add(account);
-        }
+        accounts = (List<AccountResponse>) await _accountsService.GetAllAccounts();
+        _logger.LogInformation("on submit");
     }
 }
