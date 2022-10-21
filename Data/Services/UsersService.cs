@@ -20,18 +20,18 @@ namespace OpenBankClient.Data.Services
             Console.WriteLine(response.ToString());
             //await _httpClient.PostAsJsonAsync("/api/v1/users", user);
         }
-        public async Task<LoginUserResponse> Login(LoginUserRequest loginRequest)
+        public async Task<(bool, LoginUserResponse?, int?)> Login(LoginUserRequest loginRequest)
         {
             try
             {
             var response = await _httpClient.LoginAsync(loginRequest);
             await _protectedLocalStorage.SetAsync("token", response.AccessToken);
-            return response;
+            return (true, response, null);
             }
             catch(ApiException ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                return (false, null, ex.StatusCode);
             }
         }
     }

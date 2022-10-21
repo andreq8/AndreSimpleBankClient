@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage _localStorage
+@inject NavigationManager navigationManager
+
+<div class="card">
+  <img src="/Images/abstract-user-flat-4.png" class="card-img-top" alt="..." style="height:4em; width:4em">
+  <div class="card-body">
+    <h5 class="card-title">@userLoggedIn</h5>
+    <button class="btn btn-primary" @onclick="Logout">LogOut</button>
+  </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public EventCallback btn_clicked { get; set; }
+    private string userLoggedIn { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var response = await _localStorage.GetAsync<string>("UserLoggedIn");
+        if(response.Success)
+            userLoggedIn = response.Value!;
+        StateHasChanged();
+    }
+    public async Task Logout()
+    {
+        await _localStorage.DeleteAsync("token");
+        await _localStorage.DeleteAsync("UserLoggedIn");
+        await btn_clicked.InvokeAsync();
+        navigationManager.NavigateTo("/");
+    }
+}

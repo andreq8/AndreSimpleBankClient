@@ -14,4 +14,8 @@
     <Folder Include="Data\Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Images\abstract-user-flat-4.png" />
+  </ItemGroup>
+
 </Project>

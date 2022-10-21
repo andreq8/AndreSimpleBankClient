@@ -36,17 +36,26 @@
             <NavLink class="nav-link" href="login">
                 <span class="oi oi-plus" aria-hidden="true"></span> Login
             </NavLink>
-        </div><div class="nav-item px-3">
+        </div>
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="accounts">
                 <span class="oi oi-plus" aria-hidden="true"></span> Accounts
             </NavLink>
         </div>
+        @if(UserIsLoggedIn)
+        {
+            <div class="nav-item px-3">
+                <UserCard></UserCard>
+            </div>
+        }
     </nav>
 </div>
 
 @code {
     [Parameter]
     public EventCallback<MouseEventArgs> OnHideMenu { get; set; }
+    [Parameter]
+    public bool UserIsLoggedIn { get; set; } = false;
 
     private bool collapseNavMenu = true;
 

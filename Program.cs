@@ -40,7 +40,7 @@ app.MapFallbackToPage("/_Host");
 
 var supportedCultures = new[] { "en-US", "pt-PT" };
 var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture(supportedCultures[0])
+    .SetDefaultCulture(supportedCultures[1])
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 

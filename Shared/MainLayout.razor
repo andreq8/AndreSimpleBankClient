@@ -1,31 +1,55 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inherits LayoutComponentBase
+@inject ProtectedLocalStorage _localStorage
 
 <PageTitle>OpenBankClient</PageTitle>
 
 <div class="page">
     <div class="@SideBarCssClass">
-        <NavMenu OnHideMenu="@HideMenu"/>
+        <CascadingValue Value=btn_clicked >
+            <NavMenu OnHideMenu="@HideMenu" UserIsLoggedIn="@UserIsLoggedIn" />
+        </CascadingValue>
     </div>
 
     <main>
         <div class="top-row px-4">
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+
         </div>
 
-        <article class="container-fluid p-4 align-middle">
-            @Body
+        <article   class="container-fluid p-4 align-middle">
+            <CascadingValue Value=btn_clicked >
+                @Body
+            </CascadingValue>
         </article>
     </main>
 </div>
 
 @code{
+    private bool UserIsLoggedIn = false;
     public bool hideMenu { get; set; } = false;
+
 
     private string? SideBarCssClass => hideMenu ? "smallSidebar" : "sidebar";
 
+    EventCallback btn_clicked => EventCallback.Factory.Create(this, CheckUserStatus);
 
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckUserStatus();
+    }
     public void HideMenu()
     {
         hideMenu = !hideMenu;
+    }
+    public async Task CheckUserStatus()
+    {
+        var user = await _localStorage.GetAsync<string>("UserLoggedIn");
+        if (!user.Success)
+        {
+            UserIsLoggedIn = false;
+            return;
+        }
+        UserIsLoggedIn = true;
     }
 }

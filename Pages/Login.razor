@@ -1,8 +1,10 @@
 ﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject UsersService _usersService
 @inject NavigationManager Navigation
+@inject ProtectedLocalStorage _localStorage
 
 <div class="row">
     <div class="col-5 shadow-lg p-5 border m-2 border-opacity-25 bg-light bg-gradient">
@@ -24,20 +26,33 @@
 
         </EditForm>
     </div>
-@*    <div class="col-5 border m-2 border-opacity-25 bg-light bg-gradient">
-
-    </div>
-*@</div>
+    @if(response.Item1 == false)
+    {
+        <div  class="col-5 border m-2 border-opacity-25 bg-light bg-gradient">
+            @response.Item3
+        </div>
+    }
+</div>
 
 
 @code {
     public LoginUserRequest loginUser { get; set; } = new();
+    private (bool, LoginUserResponse, int?) response;
+
+    [CascadingParameter]
+    public EventCallback btn_clicked { get; set; }
+
 
     public async Task LoginMethod()
     {
-        var response = await _usersService.Login(loginUser);
-        if (response == null)
+        response = await _usersService.Login(loginUser);
+        if (!response.Item1)
+        {
+            StateHasChanged();
             return;
+        }
+        await _localStorage.SetAsync("UserLoggedIn", response.Item2.User.Username);
+        await btn_clicked.InvokeAsync();
         Navigation.NavigateTo("/accounts");
     }
 
