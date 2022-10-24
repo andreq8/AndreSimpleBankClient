@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using OpenBankClient.Data.Services
 @inject ProtectedLocalStorage _localStorage
 @inject NavigationManager navigationManager
+@inject UsersService usersService
 
 <div class="card">
   <img src="/Images/abstract-user-flat-4.png" class="card-img-top" alt="..." style="height:4em; width:4em">
@@ -24,7 +26,7 @@
     }
     public async Task Logout()
     {
-        await _localStorage.DeleteAsync("token");
+        await usersService.LogoutAsync();
         await _localStorage.DeleteAsync("UserLoggedIn");
         await btn_clicked.InvokeAsync();
         navigationManager.NavigateTo("/");

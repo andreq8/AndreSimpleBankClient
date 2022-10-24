@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using OpenBankClient.Data;
+using OpenBankClient.Data.Providers;
 using OpenBankClient.Data.Services;
 using OpenBankClient.Data.Services.Base;
 
@@ -12,6 +14,7 @@ builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<AccountsService>();
 builder.Services.AddTransient<IClient, Client>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7268/") });
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddLocalization();
 
 

@@ -8,23 +8,31 @@
 
 <div class="row">
     <div class="col-5 shadow-lg p-5 border m-2 border-opacity-25 bg-light bg-gradient">
-        <h2 class="text-center mb-3">Login</h2>
-        <EditForm Model="@loginUser" OnSubmit="@LoginMethod"> 
-            <p>
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">Username</span>
-                  <InputText type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Username"/>
-                </div>
-            </p>
-            <p>
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">Password</span>
-                  <InputText type="Password" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Password"/>
-                </div>
-            </p>
-            <button class="btn btn-outline-dark"type="submit">Login </button>
+        <AuthorizeView>
+            <Authorized>
+                <h2 class="text-center mb-3">Login</h2>
+                <p>You are logged in</p>
+            </Authorized>
+            <NotAuthorized Context="authContext">
+                <h2 class="text-center mb-3">Login</h2>
+                <EditForm Model="@loginUser" OnSubmit="@LoginMethod"> 
+                    <p>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1">Username</span>
+                          <InputText type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Username"/>
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1">Password</span>
+                          <InputText type="Password" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Password"/>
+                        </div>
+                    </p>
+                    <button class="btn btn-outline-dark"type="submit">Login </button>
 
-        </EditForm>
+                </EditForm>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
     @if(response.Item1 == false)
     {
@@ -45,7 +53,7 @@
 
     public async Task LoginMethod()
     {
-        response = await _usersService.Login(loginUser);
+        response = await _usersService.LoginAsync(loginUser);
         if (!response.Item1)
         {
             StateHasChanged();
