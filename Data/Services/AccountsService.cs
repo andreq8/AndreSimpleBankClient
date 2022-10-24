@@ -12,13 +12,19 @@ namespace OpenBankClient.Data.Services
             _httpClient = httpClient;
             _localStorage = protectedLocalStorage;
         }
-        public async Task<ICollection<AccountResponse>> GetAllAccounts()
+        public async Task<(bool, ICollection<AccountResponse>?, int?)> GetAllAccounts()
         {
-            var auth = await _localStorage.GetAsync<string>("token");
-            var token = String.Join(" ", "Bearer", auth.Value);
-            var response = await _httpClient.AccountsAllAsync(token);
-            //await _httpClient.PostAsJsonAsync("/api/v1/users", user);
-            return response;
+            try
+            {
+                var auth = await _localStorage.GetAsync<string>("token");
+                var token = String.Join(" ", "Bearer", auth.Value);
+                var response = await _httpClient.AccountsAllAsync(token);
+                return (true, response, null);
+            }
+            catch(ApiException ex)
+            {
+                return (false, null, ex.StatusCode);
+            }
         }
         public async Task<GetAccountResponse> GetAccountDetails(int id)
         {

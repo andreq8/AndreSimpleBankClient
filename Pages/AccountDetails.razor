@@ -8,25 +8,42 @@
 
 @if (account != null)
 {
-    <ul>
-        <li>@account.Account.Id</li>
-        <li>@account.Account.Balance @account.Account.Currency</li>
-        <li>@account.Account.CreatedAt.DateTime</li>
-    </ul>
 
-    <tr class="row">
-        <th class="col-6 align-content-center">@Loc["CollumnDate"]</th>
-        <th class="col-6 justify-content-between">@Loc["CollumnAmount"]</th>
-    </tr>
-    foreach(Movim movim in account.Movims)
-    {
-        <tr class="row">
-            <td class="col-6">@movim.CreatedAt.DateTime</td>
-            <td class="col-6">@movim.Amount</td>
+    <h3>Account</h3>
+    <table class="table w-25">
+        <tr>
+            <td scope="row">Account nr.</td>
+            <td>@account.Account.Id</td>
         </tr>
-        
-    }
+        <tr>
+            <td>Currency</td>
+            <td>@account.Account.Currency</td>
+        </tr>
+        <tr>
+            <td>Balance</td>
+            <td>@account.Account.Balance</td>
+        </tr>
 
+    </table>
+
+    <h3 class="mt-5">Account Details</h3>
+    <table class="table table-striped w-75">
+        <thead>
+            <tr>
+                <th scope="col">@Loc["CollumnDate"]</th>
+                <th scope="col">@Loc["CollumnAmount"]</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach(Movim movim in account.Movims)
+        {
+            <tr>
+                <td scope="row">@movim.CreatedAt.DateTime</td>
+                <td>@movim.Amount</td>
+            </tr>
+        }
+        </tbody>
+    </table>
 }
 
 @code {
@@ -35,7 +52,7 @@
 
     private GetAccountResponse? account;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
         account = await _accountService.GetAccountDetails(id);
         StateHasChanged();

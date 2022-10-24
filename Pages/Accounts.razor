@@ -3,45 +3,50 @@
 @using OpenBankClient.Data.Services.Base
 @inject AccountsService _accountsService
 @inject ILogger<Accounts> _logger
+@inject NavigationManager _navigationManager
 
-<button @onclick="GetAccounts"> Get Accounts</button>
+<h3>Accounts</h3>
 
-<ul>
     @if(accounts != null)
     {
-        @foreach(AccountResponse account in accounts)
-        {
-            <li><a href="account/@account.Id">@account.Id</a></li>
-            <li>@account.Balance  @account.Currency</li>
-            <li>@account.CreatedAt.DateTime</li>
-        }
-       
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Account Id</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(AccountResponse account in accounts)
+            {
+                <tr>
+                    <td scope="row">@account.Id</td>
+                    <td>@account.Balance  @account.Currency</td>
+                    <td>@account.CreatedAt.ToString("dd/MM/yy")</td>
+                    <td><button class="btn btn-outline-dark" @onclick="@(e => GoToAccountDetails(account.Id))">Details</button></td>
+                </tr>
+            }
+            </tbody>
+        </table>
     }
-</ul>
 
 @code {
     private List<AccountResponse>? accounts;
 
-    //protected async override Task OnInitializedAsync()
-    //{
-    //    _logger.LogInformation("On initialized");
-    //    accounts = (List<AccountResponse>)await _accountsService.GetAllAccounts();
-    //}
-    protected async override Task OnAfterRenderAsync(bool firstRender)
+    protected async override Task OnInitializedAsync()
     {
-        if (!firstRender)
-            return;
         var response = await _accountsService.GetAllAccounts();
 
-        accounts = (List<AccountResponse>)response;
+        if (!response.Item1)
+            return;
+        accounts = (List<AccountResponse>)response.Item2!;
         _logger.LogInformation("after renderer");
         StateHasChanged();
-
     }
-
-    public async Task GetAccounts()
+    public void GoToAccountDetails(int accountId)
     {
-        accounts = (List<AccountResponse>) await _accountsService.GetAllAccounts();
-        _logger.LogInformation("on submit");
+        _navigationManager.NavigateTo($"/account/{accountId}", true);
     }
 }
