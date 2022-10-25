@@ -27,6 +27,7 @@
         if(response.Success)
             userLoggedIn = response.Value!;
         StateHasChanged();
+        firstRender = false;
     }
     public async Task Logout()
     {

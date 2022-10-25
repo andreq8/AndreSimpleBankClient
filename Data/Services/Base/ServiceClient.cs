@@ -626,7 +626,7 @@ namespace OpenBankClient.Data.Services.Base
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<string>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<string>("Bad Request", status_, objectResponse_.Object, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
