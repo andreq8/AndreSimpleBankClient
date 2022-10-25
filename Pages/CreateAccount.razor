@@ -1,0 +1,38 @@
+﻿@attribute [Authorize]
+@page "/create-account"
+@using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Base
+@inject AccountsService _accountService
+
+<h3>Create Account</h3>
+
+<div class="row w-50 mt-5 shadow-lg p-5 border m-2 border-opacity-25">
+    <EditForm Model="@accountrequest" OnSubmit="@SendAccountRequest">
+        <div class="input-group mb-3">
+            <select class="form-select" aria-label="accountSelect" id="accountSelect" @bind="accountrequest.Currency">
+                @foreach (Currency currency in Enum.GetValues<Currency>())
+                {
+                    <option value="@currency">@currency</option>
+                }
+            </select>
+            <label class="input-group-text" for="accountSelect">Currency</label>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Amount</label>
+            <input @bind-value="accountrequest.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="0">
+        </div>
+        <button type="submit">Create account</button>
+    </EditForm>
+
+</div>
+
+
+@code {
+    private AccountRequest accountrequest = new();
+
+    private async void SendAccountRequest()
+    {
+        var response = await _accountService.CreateAccountAsync(accountrequest);
+        StateHasChanged();
+    }
+}

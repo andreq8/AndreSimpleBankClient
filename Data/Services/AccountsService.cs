@@ -33,6 +33,20 @@ namespace OpenBankClient.Data.Services
             var response = await _httpClient.AccountsGETAsync(id, token);
             return response;
         }
+        public async Task<AccountResponse>? CreateAccountAsync(AccountRequest accountRequest)
+        {
+            try
+            {
+                var auth = await _localStorage.GetAsync<string>("token");
+                var token = String.Join(" ", "Bearer", auth.Value);
+                var response = await _httpClient.AccountsPOSTAsync(token, accountRequest);
+                return response;
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
 
     }
 }

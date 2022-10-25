@@ -1,4 +1,5 @@
-﻿@page "/accounts"
+﻿@attribute [Authorize]
+@page "/accounts"
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject AccountsService _accountsService
