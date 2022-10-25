@@ -877,6 +877,10 @@ namespace OpenBankClient.Data.Services.Base
                     }
                 }
             }
+            catch(Exception ex)
+            {
+                throw new ApiException("see inner exception", 500, "", null, ex);
+            }
             finally
             {
                 if (disposeClient_)
