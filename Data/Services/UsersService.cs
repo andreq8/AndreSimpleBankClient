@@ -30,6 +30,7 @@ namespace OpenBankClient.Data.Services
             {
                 var response = await _httpClient.LoginAsync(loginRequest);
                 await _protectedLocalStorage.SetAsync("token", response.AccessToken);
+                await _protectedLocalStorage.SetAsync("refreshToken", response.RefreshToken);
                 ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(response.User.Username);
                 return (true, response, null);
             }
@@ -40,9 +41,22 @@ namespace OpenBankClient.Data.Services
             }
         }
         public async Task LogoutAsync()
+        {
+            await _protectedLocalStorage.DeleteAsync("token");
+            ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+        }
+        public async Task RenewSessionAsync()
+        {
+            var refreshToken = await _protectedLocalStorage.GetAsync<string>("refreshToken");
+            var renewRequest = new RenewRequest
             {
-                await _protectedLocalStorage.DeleteAsync("token");
-                ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
-            }
+                RefreshToken = refreshToken.Value,
+            };
+            var auth = await _protectedLocalStorage.GetAsync<string>("token");
+            var token = String.Join(" ", "Bearer", auth.Value);
+            var response = await _httpClient.RenewAsync(token, renewRequest);
+            await _protectedLocalStorage.SetAsync("token", response.AccessToken);
+            await _protectedLocalStorage.SetAsync("refreshToken", response.RefreshToken);
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace OpenBankClient.Data.Providers
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private ProtectedLocalStorage _localStorage;
+        private readonly ProtectedLocalStorage _localStorage;
         public CustomAuthStateProvider(ProtectedLocalStorage localStorage)
         {
             _localStorage = localStorage;

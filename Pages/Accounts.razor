@@ -7,7 +7,7 @@
 @inject NavigationManager _navigationManager
 
 <h3>Accounts</h3>
-
+<RenewSession SessionExpired="@SessionExpired"></RenewSession>
 @if(accounts != null)
 {
     <table class="table table-striped">
@@ -35,11 +35,18 @@
 
 @code {
     private List<AccountResponse>? accounts;
+    public bool SessionExpired { get; set; } = false;
 
     protected async override Task OnInitializedAsync()
     {
         var response = await _accountsService.GetAllAccounts();
 
+        if(response.Item3 == "token expired")
+        {
+            SessionExpired = true;
+            StateHasChanged();
+            return;
+        }
         if (!response.Item1)
             return;
         accounts = (List<AccountResponse>)response.Item2!;

@@ -23,11 +23,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var response = await _localStorage.GetAsync<string>("UserLoggedIn");
-        if(response.Success)
-            userLoggedIn = response.Value!;
-        StateHasChanged();
-        firstRender = false;
     }
     public async Task Logout()
     {

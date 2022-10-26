@@ -7,12 +7,14 @@ namespace OpenBankClient.Data.Services
     {
         private IClient _httpClient;
         private ProtectedLocalStorage _localStorage;
-        public AccountsService(IClient httpClient, ProtectedLocalStorage protectedLocalStorage)
+        private ILogger<AccountsService> _logger;
+        public AccountsService(IClient httpClient, ProtectedLocalStorage protectedLocalStorage, ILogger<AccountsService> logger)
         {
             _httpClient = httpClient;
             _localStorage = protectedLocalStorage;
+            _logger = logger;
         }
-        public async Task<(bool, ICollection<AccountResponse>?, int?)> GetAllAccounts()
+        public async Task<(bool, ICollection<AccountResponse>?, string?)> GetAllAccounts()
         {
             try
             {
@@ -23,7 +25,13 @@ namespace OpenBankClient.Data.Services
             }
             catch(ApiException ex)
             {
-                return (false, null, ex.StatusCode);
+                var authenticationHeader = ex.Headers.FirstOrDefault(h => h.Key == "WWW-Authenticate");
+                if (authenticationHeader.Value.Any(s => s.Contains("token expired")))
+                {
+                    _logger.LogInformation("token expired");
+                    return (false, null, "token expired");
+                }
+                return (false, null, ex.StatusCode.ToString());
             }
         }
         public async Task<GetAccountResponse> GetAccountDetails(int id)

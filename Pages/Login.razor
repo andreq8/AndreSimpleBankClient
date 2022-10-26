@@ -39,7 +39,7 @@
     </div>
     @if(response.Item1 == false)
     {
-        <div  class="col-5 border m-2 border-opacity-25 bg-light bg-gradient">
+        <div class="col-5 border m-2 border-opacity-25 bg-light bg-gradient">
             @response.Item3
         </div>
     }
@@ -50,10 +50,6 @@
     public LoginUserRequest loginUser { get; set; } = new();
     private (bool, LoginUserResponse, int?) response;
 
-    [CascadingParameter]
-    public EventCallback btn_clicked { get; set; }
-
-
     public async Task LoginMethod()
     {
         response = await _usersService.LoginAsync(loginUser);
@@ -63,7 +59,6 @@
             return;
         }
         await _localStorage.SetAsync("UserLoggedIn", response.Item2.User.Username);
-        await btn_clicked.InvokeAsync();
         Navigation.NavigateTo("/accounts");
     }
 

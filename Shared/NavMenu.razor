@@ -4,9 +4,6 @@
         <button type="button" title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <button type="button" title="Navigation menu" class="btn-sm" @onclick="HideNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
     </div>
 </div>
 
@@ -29,9 +26,21 @@
         </div>
         <AuthorizeView>
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="accounts">
+                <button class="nav-link accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"> 
                     <span class="oi oi-plus" aria-hidden="true"></span> Accounts
-                </NavLink>
+                </button>
+                <div id="flush-collapseOne" class="accordion-collapse collapsed" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="accounts">
+                            <span class="oi oi-plus" aria-hidden="true"></span> My Accounts
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="create-account">
+                            <span class="oi oi-plus" aria-hidden="true"></span> Create account
+                        </NavLink>
+                    </div>
+                </div>
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="transfers">
@@ -46,10 +55,6 @@
 </div>
 
 @code {
-    [Parameter]
-    public EventCallback<MouseEventArgs> OnHideMenu { get; set; }
-    [Parameter]
-    public bool UserIsLoggedIn { get; set; } = false;
 
     private bool collapseNavMenu = true;
 
@@ -59,9 +64,5 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
-    }
-    private async Task HideNavMenu()
-    {
-        await OnHideMenu.InvokeAsync();
     }
 }

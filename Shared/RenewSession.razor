@@ -1,0 +1,28 @@
+﻿@using OpenBankClient.Data.Services
+@inject UsersService _usersService
+
+<div class="b-2 @RenewSessionCssClass">
+    <div class="alert alert-primary" role="alert">
+        <span>Your session has expired, click here to renew session!</span> <button class="btn btn-outline-dark btn-sm" @onclick="Renew">Renew Session</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public bool SessionExpired { get; set; }
+
+    private string? RenewSessionCssClass => SessionExpired ? null : "visually-hidden";
+
+    private async Task Renew()
+    {
+        try
+        {
+            await _usersService.RenewSessionAsync();
+            StateHasChanged();
+        }
+        catch(Exception ex)
+        {
+            
+        }
+    }
+}
