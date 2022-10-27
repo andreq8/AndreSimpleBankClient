@@ -3,14 +3,15 @@ using OpenBankClient.Data.Services.Base;
 
 namespace OpenBankClient.Data.Services
 {
-    public class TransfersService
+    public class TransfersService : BaseService
     {
         private readonly IClient _httpClient;
         private readonly ProtectedLocalStorage _localStorage;
-        public TransfersService(IClient httpClient, ProtectedLocalStorage protectedLocalStorage)
+        public TransfersService(IClient httpClient, ProtectedLocalStorage _localStorage) 
+            : base(httpClient, _localStorage)
         {
             _httpClient = httpClient;
-            _localStorage = protectedLocalStorage;
+            this._localStorage = _localStorage;
         }
         public async Task<(bool, string?, string?)> Transfer(TransferRequest transferRequest)
         {
@@ -23,9 +24,8 @@ namespace OpenBankClient.Data.Services
             }
             catch (ApiException ex)
             {
-                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
-                    return (false, null, "token expired");
-                return (false, ex.Response, ex.StatusCode.ToString());
+                var response = HandleApiException(ex);
+                return (false, null, response);
             }
         }
         

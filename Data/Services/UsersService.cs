@@ -19,13 +19,20 @@ namespace OpenBankClient.Data.Services
             _logger = logger;
             _authenticationStateProvider = authenticationStateProvider;
     }
-        public async Task RegisterUser(CreateUserRequest user)
+        public async Task<(bool, string?)> RegisterUserAsync(CreateUserRequest user)
         {
-            var response = await _httpClient.UsersAsync(user);
-            Console.WriteLine(response.ToString());
-            //await _httpClient.PostAsJsonAsync("/api/v1/users", user);
+            try
+            {
+                var response = await _httpClient.UsersAsync(user);
+                return (true, "User registered");
+            }
+            catch(ApiException ex)
+            {
+                var response = HandleApiException(ex);
+                return (false, response);
+            }
         }
-        public async Task<(bool, LoginUserResponse?, int?)> LoginAsync(LoginUserRequest loginRequest)
+        public async Task<(bool, LoginUserResponse?, string?)> LoginAsync(LoginUserRequest loginRequest)
         {
             try
             {
@@ -37,8 +44,8 @@ namespace OpenBankClient.Data.Services
             }
             catch (ApiException ex)
             {
-                _logger.LogError(ex.Message);
-                return (false, null, ex.StatusCode);
+                var response = HandleApiException(ex);
+                return (false, null, response);
             }
         }
         public async Task LogoutAsync()
@@ -46,18 +53,28 @@ namespace OpenBankClient.Data.Services
             await _localStorage.DeleteAsync("token");
             ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         }
-        public async Task RenewSessionAsync()
+        public async Task<(bool, string?)> RenewSessionAsync()
         {
-            var refreshToken = await _localStorage.GetAsync<string>("refreshToken");
-            var renewRequest = new RenewRequest
+            try
             {
-                RefreshToken = refreshToken.Value,
-            };
-            var auth = await _localStorage.GetAsync<string>("token");
-            var token = String.Join(" ", "Bearer", auth.Value);
-            var response = await _httpClient.RenewAsync(token, renewRequest);
-            await _localStorage.SetAsync("token", response.AccessToken);
-            await _localStorage.SetAsync("refreshToken", response.RefreshToken);
+                var refreshToken = await _localStorage.GetAsync<string>("refreshToken");
+                var renewRequest = new RenewRequest
+                {
+                    RefreshToken = refreshToken.Value,
+                };
+                var auth = await _localStorage.GetAsync<string>("token");
+                var token = String.Join(" ", "Bearer", auth.Value);
+                var response = await _httpClient.RenewAsync(token, renewRequest);
+                await _localStorage.SetAsync("token", response.AccessToken);
+                await _localStorage.SetAsync("refreshToken", response.RefreshToken);
+                return (true, null);
+            }
+            catch(ApiException ex)
+            {
+                var response = HandleApiException(ex);
+                return (false, response);
+            }
+
         }
     }
 }

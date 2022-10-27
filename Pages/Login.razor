@@ -48,7 +48,7 @@
 
 @code {
     public LoginUserRequest loginUser { get; set; } = new();
-    private (bool, LoginUserResponse, int?) response;
+    private (bool, LoginUserResponse?, string?) response;
 
     public async Task LoginMethod()
     {
@@ -58,7 +58,6 @@
             StateHasChanged();
             return;
         }
-        await _localStorage.SetAsync("UserLoggedIn", response.Item2.User.Username);
         Navigation.NavigateTo("/accounts");
     }
 

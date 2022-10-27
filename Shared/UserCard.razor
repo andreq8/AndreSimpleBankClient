@@ -17,10 +17,17 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     private string userLoggedIn { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+            userLoggedIn = authState.User.Identity.Name!;
+        StateHasChanged();
     }
     public async Task Logout()
     {

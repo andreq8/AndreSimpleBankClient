@@ -877,8 +877,10 @@ namespace OpenBankClient.Data.Services.Base
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                if(ex.GetType() == typeof(ApiException))
+                    throw (ApiException)ex;
                 throw new ApiException("see inner exception", 500, "", null, ex);
             }
             finally

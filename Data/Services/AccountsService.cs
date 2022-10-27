@@ -26,12 +26,8 @@ namespace OpenBankClient.Data.Services
             }
             catch(ApiException ex)
             {
-                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
-                {
-                    _logger.LogInformation("token expired");
-                    return (false, null, "token expired");
-                }
-                return (false, null, ex.StatusCode.ToString());
+                var response = HandleApiException(ex);
+                return (false, null, response);
             }
         }
         public async Task<(bool, GetAccountResponse?, string?)> GetAccountDetails(int id)
@@ -45,12 +41,8 @@ namespace OpenBankClient.Data.Services
             }
             catch(ApiException ex)
             {
-                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
-                {
-                    _logger.LogInformation("token expired");
-                    return (false, null, "token expired");
-                }
-                return (false, null, ex.StatusCode.ToString());
+                var response = HandleApiException(ex);
+                return (false, null, response);
             }
         }
         public async Task<(bool, AccountResponse?, string?)>? CreateAccountAsync(AccountRequest accountRequest)
@@ -64,12 +56,8 @@ namespace OpenBankClient.Data.Services
             }
             catch(ApiException ex)
             {
-                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
-                {
-                    _logger.LogInformation("token expired");
-                    return (false, null, "token expired");
-                }
-                return (false, null, ex.StatusCode.ToString());
+                var response = HandleApiException(ex);
+                return (false, null, response);
             }
         }
 
