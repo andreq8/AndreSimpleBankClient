@@ -5,16 +5,17 @@ using OpenBankClient.Data.Services.Base;
 
 namespace OpenBankClient.Data.Services
 {
-    public class UsersService
+    public class UsersService : BaseService
     {
         private readonly IClient _httpClient;
-        private readonly ProtectedLocalStorage _protectedLocalStorage;
+        private readonly ProtectedLocalStorage _localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILogger<UsersService> _logger;
-        public UsersService(IClient httpClient, ProtectedLocalStorage protectedLocalStorage, ILogger<UsersService> logger, AuthenticationStateProvider authenticationStateProvider)
+        public UsersService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<UsersService> logger, AuthenticationStateProvider authenticationStateProvider) 
+            : base(httpClient, localStorage)
         {
             _httpClient = httpClient;
-            _protectedLocalStorage = protectedLocalStorage;
+            _localStorage = localStorage;
             _logger = logger;
             _authenticationStateProvider = authenticationStateProvider;
     }
@@ -29,8 +30,8 @@ namespace OpenBankClient.Data.Services
             try
             {
                 var response = await _httpClient.LoginAsync(loginRequest);
-                await _protectedLocalStorage.SetAsync("token", response.AccessToken);
-                await _protectedLocalStorage.SetAsync("refreshToken", response.RefreshToken);
+                await _localStorage.SetAsync("token", response.AccessToken);
+                await _localStorage.SetAsync("refreshToken", response.RefreshToken);
                 ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(response.User.Username);
                 return (true, response, null);
             }
@@ -42,21 +43,21 @@ namespace OpenBankClient.Data.Services
         }
         public async Task LogoutAsync()
         {
-            await _protectedLocalStorage.DeleteAsync("token");
+            await _localStorage.DeleteAsync("token");
             ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         }
         public async Task RenewSessionAsync()
         {
-            var refreshToken = await _protectedLocalStorage.GetAsync<string>("refreshToken");
+            var refreshToken = await _localStorage.GetAsync<string>("refreshToken");
             var renewRequest = new RenewRequest
             {
                 RefreshToken = refreshToken.Value,
             };
-            var auth = await _protectedLocalStorage.GetAsync<string>("token");
+            var auth = await _localStorage.GetAsync<string>("token");
             var token = String.Join(" ", "Bearer", auth.Value);
             var response = await _httpClient.RenewAsync(token, renewRequest);
-            await _protectedLocalStorage.SetAsync("token", response.AccessToken);
-            await _protectedLocalStorage.SetAsync("refreshToken", response.RefreshToken);
+            await _localStorage.SetAsync("token", response.AccessToken);
+            await _localStorage.SetAsync("refreshToken", response.RefreshToken);
         }
     }
 }

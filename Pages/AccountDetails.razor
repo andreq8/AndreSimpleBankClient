@@ -50,12 +50,24 @@
 @code {
     [Parameter]
     public int id { get; set; }
+    [CascadingParameter]
+    public EventCallback SessionStatusEvent { get; set; }
+
 
     private GetAccountResponse? account;
 
     protected override async Task OnInitializedAsync()
     {
-        account = await _accountService.GetAccountDetails(id);
+        var result = await _accountService.GetAccountDetails(id);
+        if(result.Item3 == "token expired")
+        {
+            await SessionStatusEvent.InvokeAsync();
+            return;
+        }
+
+        if (!result.Item1)
+            return;
+        account = result.Item2;
         StateHasChanged();
 
     }

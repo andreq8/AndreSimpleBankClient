@@ -15,16 +15,23 @@
         </div>
 
         <article   class="container-fluid p-4 align-middle">
-
-            @Body
+                <CascadingValue Value="@sessionStatusEvent">
+                    <RenewSession SessionExpired="@SessionExpired"></RenewSession>
+                    @Body
+                </CascadingValue>
         </article>
         
     </main>
 </div>
 
 @code{
-    protected override async Task OnInitializedAsync()
+    EventCallback sessionStatusEvent => EventCallback.Factory.Create(this, ChangeSessionStatus);
+
+    public bool SessionExpired { get; set; }
+
+    public void ChangeSessionStatus()
     {
+        SessionExpired = true;
+        StateHasChanged();
     }
-    
 }

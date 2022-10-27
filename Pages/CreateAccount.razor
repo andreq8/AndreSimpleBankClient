@@ -7,9 +7,9 @@
 <h3>Create Account</h3>
 
 <div class="row w-50 mt-5 shadow-lg p-5 border m-2 border-opacity-25">
-    <EditForm Model="@accountrequest" OnSubmit="@SendAccountRequest">
+    <EditForm Model="@accountRequest" OnSubmit="@SendAccountRequest">
         <div class="input-group mb-3">
-            <select class="form-select" aria-label="accountSelect" id="accountSelect" @bind="accountrequest.Currency">
+            <select class="form-select" aria-label="accountSelect" id="accountSelect" @bind="accountRequest.Currency">
                 @foreach (Currency currency in Enum.GetValues<Currency>())
                 {
                     <option value="@currency">@currency</option>
@@ -19,7 +19,7 @@
         </div>
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Amount</label>
-            <input @bind-value="accountrequest.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="0">
+            <input @bind-value="accountRequest.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="0">
         </div>
         <button class="btn btn-outline-dark" type="submit">Create account</button>
     </EditForm>
@@ -28,11 +28,23 @@
 
 
 @code {
-    private AccountRequest accountrequest = new();
+    private AccountRequest accountRequest = new();
+
+    [CascadingParameter]
+    public EventCallback SessionStatusEvent { get; set; }
+
 
     private async void SendAccountRequest()
     {
-        var response = await _accountService.CreateAccountAsync(accountrequest);
+        var response = await _accountService.CreateAccountAsync(accountRequest);
+        if (response.Item3 == "token expired")
+        {
+            await SessionStatusEvent.InvokeAsync();
+            return;
+        }
+        if (!response.Item1)
+            return;
+
         StateHasChanged();
     }
 }

@@ -5,14 +5,14 @@ namespace OpenBankClient.Data.Services
 {
     public class TransfersService
     {
-        private IClient _httpClient;
-        private ProtectedLocalStorage _localStorage;
+        private readonly IClient _httpClient;
+        private readonly ProtectedLocalStorage _localStorage;
         public TransfersService(IClient httpClient, ProtectedLocalStorage protectedLocalStorage)
         {
             _httpClient = httpClient;
             _localStorage = protectedLocalStorage;
         }
-        public async Task<(bool, string, int?)> Transfer(TransferRequest transferRequest)
+        public async Task<(bool, string?, string?)> Transfer(TransferRequest transferRequest)
         {
             try
             {
@@ -23,7 +23,9 @@ namespace OpenBankClient.Data.Services
             }
             catch (ApiException ex)
             {
-                return (false, ex.Response, ex.StatusCode);
+                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
+                    return (false, null, "token expired");
+                return (false, ex.Response, ex.StatusCode.ToString());
             }
         }
         

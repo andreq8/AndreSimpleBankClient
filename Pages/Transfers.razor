@@ -49,33 +49,45 @@
      }
 
 
-        @code {
-        private List<AccountResponse>? accounts;
-        private TransferRequest transferRequest = new();
-        private string OperationStatus = "";
-        private string OperationError = "";
+@code {
+    [CascadingParameter]
+    public EventCallback SessionStatusEvent { get; set; }
 
-        protected async override Task OnInitializedAsync()
+    private List<AccountResponse>? accounts;
+
+    private TransferRequest transferRequest = new();
+    private string OperationStatus = "";
+    private string OperationError = "";
+
+    protected async override Task OnInitializedAsync()
+    {
+        var response = await _accountsService.GetAllAccounts();
+        if(response.Item3 == "token expired")
         {
-            var response = await _accountsService.GetAllAccounts();
-
-            if (!response.Item1)
-                return;
-            accounts = (List<AccountResponse>)response.Item2!;
-            _logger.LogInformation("after renderer");
+            await SessionStatusEvent.InvokeAsync();
+            return;
         }
-        public async void MakeTransfer()
+        if (!response.Item1)
+            return;
+        accounts = (List<AccountResponse>)response.Item2!;
+        _logger.LogInformation("after renderer");
+    }
+    public async void MakeTransfer()
+    {
+        var response = await _transfersService.Transfer(transferRequest);
+        if(response.Item3 == "token expired")
         {
-            var response = await _transfersService.Transfer(transferRequest);
-            if (!response.Item1)
-            {
-                OperationStatus = "transfer failed";
-                OperationError = response.Item2;
-                StateHasChanged();
-                return;
-            }
-            OperationStatus = "Transfer Succeded";
+            await SessionStatusEvent.InvokeAsync();
+            return;
+        }
+        if (!response.Item1)
+        {
+            OperationStatus = "transfer failed";
+            OperationError = response.Item2;
             StateHasChanged();
+            return;
         }
-
+        OperationStatus = "Transfer Succeded";
+        StateHasChanged();
+    }
 }

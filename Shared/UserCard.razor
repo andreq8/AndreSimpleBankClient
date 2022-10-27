@@ -17,8 +17,6 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    public EventCallback btn_clicked { get; set; }
     private string userLoggedIn { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -28,7 +26,6 @@
     {
         await usersService.LogoutAsync();
         await _localStorage.DeleteAsync("UserLoggedIn");
-        await btn_clicked.InvokeAsync();
         navigationManager.NavigateTo("/");
     }
 }

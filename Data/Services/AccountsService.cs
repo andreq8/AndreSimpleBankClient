@@ -3,15 +3,16 @@ using OpenBankClient.Data.Services.Base;
 
 namespace OpenBankClient.Data.Services
 {
-    public class AccountsService
+    public class AccountsService : BaseService
     {
         private IClient _httpClient;
         private ProtectedLocalStorage _localStorage;
-        private ILogger<AccountsService> _logger;
-        public AccountsService(IClient httpClient, ProtectedLocalStorage protectedLocalStorage, ILogger<AccountsService> logger)
+        private readonly ILogger<AccountsService> _logger;
+        public AccountsService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<AccountsService> logger) 
+            : base(httpClient, localStorage)
         {
             _httpClient = httpClient;
-            _localStorage = protectedLocalStorage;
+            _localStorage = localStorage;
             _logger = logger;
         }
         public async Task<(bool, ICollection<AccountResponse>?, string?)> GetAllAccounts()
@@ -25,8 +26,7 @@ namespace OpenBankClient.Data.Services
             }
             catch(ApiException ex)
             {
-                var authenticationHeader = ex.Headers.FirstOrDefault(h => h.Key == "WWW-Authenticate");
-                if (authenticationHeader.Value.Any(s => s.Contains("token expired")))
+                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
                 {
                     _logger.LogInformation("token expired");
                     return (false, null, "token expired");
@@ -34,25 +34,42 @@ namespace OpenBankClient.Data.Services
                 return (false, null, ex.StatusCode.ToString());
             }
         }
-        public async Task<GetAccountResponse> GetAccountDetails(int id)
+        public async Task<(bool, GetAccountResponse?, string?)> GetAccountDetails(int id)
         {
-            var auth = await _localStorage.GetAsync<string>("token");
-            var token = String.Join(" ", "Bearer", auth.Value);
-            var response = await _httpClient.AccountsGETAsync(id, token);
-            return response;
+            try
+            {
+                var auth = await _localStorage.GetAsync<string>("token");
+                var token = String.Join(" ", "Bearer", auth.Value);
+                var response = await _httpClient.AccountsGETAsync(id, token);
+                return (true, response, null);
+            }
+            catch(ApiException ex)
+            {
+                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
+                {
+                    _logger.LogInformation("token expired");
+                    return (false, null, "token expired");
+                }
+                return (false, null, ex.StatusCode.ToString());
+            }
         }
-        public async Task<AccountResponse>? CreateAccountAsync(AccountRequest accountRequest)
+        public async Task<(bool, AccountResponse?, string?)>? CreateAccountAsync(AccountRequest accountRequest)
         {
             try
             {
                 var auth = await _localStorage.GetAsync<string>("token");
                 var token = String.Join(" ", "Bearer", auth.Value);
                 var response = await _httpClient.AccountsPOSTAsync(token, accountRequest);
-                return response;
+                return (true, response, null);
             }
-            catch(ApiException)
+            catch(ApiException ex)
             {
-                return null;
+                if (ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
+                {
+                    _logger.LogInformation("token expired");
+                    return (false, null, "token expired");
+                }
+                return (false, null, ex.StatusCode.ToString());
             }
         }
 

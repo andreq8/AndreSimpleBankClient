@@ -1,5 +1,7 @@
 ﻿@using OpenBankClient.Data.Services
 @inject UsersService _usersService
+@inject NavigationManager Navigation
+
 
 <div class="b-2 @RenewSessionCssClass">
     <div class="alert alert-primary" role="alert">
@@ -18,7 +20,14 @@
         try
         {
             await _usersService.RenewSessionAsync();
-            StateHasChanged();
+            SessionExpired = false;
+            var uri = new Uri(Navigation.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+            var uriEscaped = Uri.EscapeDataString(uri);
+
+            Navigation.NavigateTo(
+                $"Authentication/Index?redirectUri={uriEscaped}",
+                forceLoad: true);
+
         }
         catch(Exception ex)
         {
