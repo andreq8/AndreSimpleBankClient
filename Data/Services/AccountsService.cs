@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using OpenBankClient.Data.Models;
 using OpenBankClient.Data.Services.Base;
 
 namespace OpenBankClient.Data.Services
@@ -8,56 +10,67 @@ namespace OpenBankClient.Data.Services
         private IClient _httpClient;
         private ProtectedLocalStorage _localStorage;
         private readonly ILogger<AccountsService> _logger;
-        public AccountsService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<AccountsService> logger) 
+        private IMapper _mapper;
+        public AccountsService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<AccountsService> logger, IMapper mapper) 
             : base(httpClient, localStorage)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
             _logger = logger;
+            _mapper = mapper;
         }
-        public async Task<(bool, ICollection<AccountResponse>?, string?)> GetAllAccounts()
+        public async Task<(bool, IList<Account>?, string?)> GetAllAccounts()
         {
             try
             {
                 var auth = await _localStorage.GetAsync<string>("token");
                 var token = String.Join(" ", "Bearer", auth.Value);
                 var response = await _httpClient.AccountsAllAsync(token);
-                return (true, response, null);
+                var accounts = _mapper.Map<IList<Account>>(response);
+
+                return (true, accounts, null);
             }
             catch(ApiException ex)
             {
                 var response = HandleApiException(ex);
-                return (false, null, response);
+                return (false, null, response.Item2);
             }
         }
-        public async Task<(bool, GetAccountResponse?, string?)> GetAccountDetails(int id)
+        public async Task<(bool, AccountDetails?, string?)> GetAccountDetails(int id)
         {
             try
             {
                 var auth = await _localStorage.GetAsync<string>("token");
                 var token = String.Join(" ", "Bearer", auth.Value);
                 var response = await _httpClient.AccountsGETAsync(id, token);
-                return (true, response, null);
+                var account = new AccountDetails
+                {
+                    Account = _mapper.Map<Account>(response.Account),
+                    Movims = _mapper.Map<IList<Models.Movim>>(response.Movims),
+                };
+                    _mapper.Map<GetAccountResponse, AccountDetails>(response);
+                return (true, account, null);
             }
             catch(ApiException ex)
             {
                 var response = HandleApiException(ex);
-                return (false, null, response);
+                return (false, null, response.Item2);
             }
         }
-        public async Task<(bool, AccountResponse?, string?)>? CreateAccountAsync(AccountRequest accountRequest)
+        public async Task<(bool, AccountResponse?, string?)>? CreateAccountAsync(CreateAccount account)
         {
             try
             {
                 var auth = await _localStorage.GetAsync<string>("token");
                 var token = String.Join(" ", "Bearer", auth.Value);
+                var accountRequest = _mapper.Map<AccountRequest>(account);
                 var response = await _httpClient.AccountsPOSTAsync(token, accountRequest);
                 return (true, response, null);
             }
             catch(ApiException ex)
             {
                 var response = HandleApiException(ex);
-                return (false, null, response);
+                return (false, null, response.Item2);
             }
         }
 

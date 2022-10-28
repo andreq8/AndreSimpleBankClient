@@ -1,46 +1,67 @@
 ﻿@page "/register"
+@using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject UsersService _usersService
 @inject ILogger<Register> _logger
 
+<div class="row">
+    <div class="col-5 shadow-lg p-5 border m-2 border-opacity-25 bg-light bg-gradient">
+        <h2 class="text-center mb-3">Register</h2>
+        <EditForm Model="@userRequest" OnSubmit="@SubmitForm"> 
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <p>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Email</span>
+                    <InputText type="email" class="form-control" @bind-Value="userRequest.Email"/>
+                </div>
+            </p>
+            <p>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon2">Password</span>
+                    <InputText type="password" class="form-control" @bind-Value="userRequest.Password" />
+                </div>
+            </p>
+            <p>
+                 <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon2">Username</span>
+                    <InputText type="text" class="form-control" @bind-Value="userRequest.UserName" />
+                </div>
+            </p>
+            <p>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon2">Full Name</span>
+                    <InputText type="text" class="form-control" @bind-Value="userRequest.FullName" />
+                </div>
+            </p>
+            <button class="btn btn-outline-dark"type="submit">Register</button>
+        </EditForm>
+        @if(OperationStatus == "User registered")
+        {
+            <div class="alert alert-success mt-3" role="alert">
+                @OperationStatus
+            </div>
+        }
+        @if(OperationStatus != "User registered" && OperationStatus != "")
+        {
+            <div class="alert alert-danger mt-3" role="alert">
+                @OperationStatus
+            </div>
+        }
 
-<h3>Register</h3>
-<p> todo form to register user</p>
-<EditForm Model="@userRequest" OnSubmit="@SubmitForm"> 
-    <p>
-        <label>
-            Email :
-            <InputText @bind-Value="userRequest.Email"/>
-        </label>
-    </p>
-    <p>
-        <label>
-            Password : 
-            <InputText @bind-Value="userRequest.Password"/>
-        </label>
-    </p>
-    <p>
-        <label>
-            Username : 
-            <InputText @bind-Value="userRequest.UserName"/>
-        </label>
-    </p>
-    <p>
-        <label>
-            Full Name : 
-            <InputText @bind-Value="userRequest.FullName"/>
-        </label>
-    </p>
-    <button type="submit">Register User </button>
+    </div>
+</div>
 
-</EditForm>
 
 @code {
-    private CreateUserRequest userRequest= new();
+    private CreateUser userRequest= new();
+    private string OperationStatus = "";
 
     public async Task SubmitForm()
     {
-        await _usersService.RegisterUserAsync(userRequest);        
+        var response = await _usersService.RegisterUserAsync(userRequest);
+        OperationStatus = response.Item2!;
+        StateHasChanged();
     }
 }

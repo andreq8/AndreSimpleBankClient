@@ -12,16 +12,16 @@ namespace OpenBankClient.Data.Services.Base
             _client = client;
             _protectedLocalStorage = protectedLocalStorage;
         }
-        protected  string HandleApiException(ApiException ex)
+        protected  (string, string) HandleApiException(ApiException ex)
         {
             if(ex.Headers != null)
             { 
                 if(ex.Headers.Any(h => h.Value.Any(v => v.Contains("token expired"))))
                 {
-                    return "token expired";
+                    return (ex.Response, "token expired");
                 }
             }
-            return ex.StatusCode.ToString();
+            return (ex.Response, ex.StatusCode.ToString());
         }
     }
 }

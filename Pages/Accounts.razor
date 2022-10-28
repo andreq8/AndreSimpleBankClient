@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize]
 @page "/accounts"
+@using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject AccountsService _accountsService
@@ -7,6 +8,7 @@
 @inject NavigationManager _navigationManager
 
 <h3>Accounts</h3>
+
 @if(accounts != null)
 {
     <table class="table table-striped">
@@ -19,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach(AccountResponse account in accounts)
+        @foreach(Account account in accounts)
         {
             <tr>
                 <td scope="row">@account.Id</td>
@@ -37,7 +39,7 @@
     [CascadingParameter]
     public EventCallback SessionStatusEvent { get; set; }
 
-    private List<AccountResponse>? accounts;
+    private List<Account>? accounts;
 
     protected async override Task OnInitializedAsync()
     {
@@ -50,7 +52,7 @@
         }
         if (!response.Item1)
             return;
-        accounts = (List<AccountResponse>)response.Item2!;
+        accounts = (List<Account>)response.Item2!;
         StateHasChanged();
     }
     public void GoToAccountDetails(int accountId)

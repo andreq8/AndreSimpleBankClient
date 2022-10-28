@@ -117,10 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CollumnAmount" xml:space="preserve">
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Account Details" xml:space="preserve">
+    <value>Account Details</value>
+  </data>
+  <data name="Account nr." xml:space="preserve">
+    <value>Account nr.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
     <value>Amount</value>
   </data>
-  <data name="CollumnDate" xml:space="preserve">
+  <data name="Back" xml:space="preserve">
+    <value>Back to accounts</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="Date" xml:space="preserve">
     <value>Date</value>
   </data>
 </root>

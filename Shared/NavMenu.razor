@@ -1,4 +1,5 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject IStringLocalizer<NavMenu> Loc
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">OpenBankClient</a>
         <button type="button" title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -11,40 +12,40 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="oi oi-home" aria-hidden="true"></span> @Loc["Home"]
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="register">
-                <span class="oi oi-plus" aria-hidden="true"></span> Register
+                <span class="oi oi-plus" aria-hidden="true"></span> @Loc["Register"]
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="login">
-                <span class="oi oi-account-login" aria-hidden="true"></span> Login
+                <span class="oi oi-account-login" aria-hidden="true"></span> @Loc["Login"]
             </NavLink>
         </div>
         <AuthorizeView>
             <div class="nav-item px-3" id="accordionFlushExample">
                 <button class="nav-link accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"> 
-                    <span class="oi oi-briefcase" aria-hidden="true"></span> Accounts
+                    <span class="oi oi-briefcase" aria-hidden="true"></span> @Loc["Accounts"]
                 </button>
                 <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                     <div class="nav-item px-3">
                         <NavLink class="nav-link" href="accounts">
-                            <span class="oi oi-plus" aria-hidden="true"></span> My Accounts
+                            <span class="oi oi-plus" aria-hidden="true"></span> @Loc["My Accounts"]
                         </NavLink>
                     </div>
                     <div class="nav-item px-3">
                         <NavLink class="nav-link" href="create-account">
-                            <span class="oi oi-plus" aria-hidden="true"></span> Create account
+                            <span class="oi oi-plus" aria-hidden="true"></span> @Loc["Create Account"]
                         </NavLink>
                     </div>
                 </div>
             </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="transfers">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Transfers
+                    <span class="oi oi-plus" aria-hidden="true"></span> @Loc["Transfers"]
                 </NavLink>
             </div>
             <div class="nav-item px-3">

@@ -117,28 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Account" xml:space="preserve">
-    <value>Conta</value>
+  <data name="Accounts" xml:space="preserve">
+    <value>Contas</value>
   </data>
-  <data name="Account Details" xml:space="preserve">
-    <value>Detalhes Conta</value>
+  <data name="Create Account" xml:space="preserve">
+    <value>Criar Conta</value>
   </data>
-  <data name="Account nr." xml:space="preserve">
-    <value>Nr. Conta</value>
+  <data name="Home" xml:space="preserve">
+    <value>Inicio</value>
   </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Quantia</value>
+  <data name="Login" xml:space="preserve">
+    <value>Entrar</value>
   </data>
-  <data name="Back" xml:space="preserve">
-    <value>Voltar a contas</value>
+  <data name="My Accounts" xml:space="preserve">
+    <value>Listar Contas</value>
   </data>
-  <data name="Balance" xml:space="preserve">
-    <value>Saldo</value>
+  <data name="Register" xml:space="preserve">
+    <value>Registar</value>
   </data>
-  <data name="Currency" xml:space="preserve">
-    <value>Moeda</value>
-  </data>
-  <data name="Date" xml:space="preserve">
-    <value>Data</value>
+  <data name="Transfers" xml:space="preserve">
+    <value>Transferir</value>
   </data>
 </root>

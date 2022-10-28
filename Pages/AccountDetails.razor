@@ -2,50 +2,58 @@
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject IStringLocalizer<AccountDetails> Loc
+@inject NavigationManager _navigationManager
 
 @page "/account/{id:int}"
 
 @inject AccountsService _accountService
-
-@if (account != null)
-{
-
-    <h3>Account</h3>
-    <table class="table w-25">
-        <tr>
-            <td scope="row">Account nr.</td>
-            <td>@account.Account.Id</td>
-        </tr>
-        <tr>
-            <td>Currency</td>
-            <td>@account.Account.Currency</td>
-        </tr>
-        <tr>
-            <td>Balance</td>
-            <td>@account.Account.Balance</td>
-        </tr>
-
-    </table>
-
-    <h3 class="mt-5">Account Details</h3>
-    <table class="table table-striped w-75">
-        <thead>
+<div class="row mb-2">
+    <div class="col-8"></div>
+    <div class="col-2">
+        <button class="btn btn-sm btn-outline-info" @onclick="RedirectToAccounts">@Loc["Back"]</button>
+    </div>
+</div>
+<div class="row">
+    @if (account != null)
+    {
+        <h3>@Loc["Account"]</h3>
+        <table class="table w-25">
             <tr>
-                <th scope="col">@Loc["CollumnDate"]</th>
-                <th scope="col">@Loc["CollumnAmount"]</th>
+                <td scope="row">@Loc["Account nr."]</td>
+                <td>@account.Account.Id</td>
             </tr>
-        </thead>
-        <tbody>
-        @foreach(Movim movim in account.Movims)
-        {
             <tr>
-                <td scope="row">@movim.CreatedAt.DateTime</td>
-                <td>@movim.Amount</td>
+                <td>@Loc["Currency"]</td>
+                <td>@account.Account.Currency</td>
             </tr>
-        }
-        </tbody>
-    </table>
-}
+            <tr>
+                <td>@Loc["Balance"]</td>
+                <td>@account.Account.Balance</td>
+            </tr>
+
+        </table>
+
+        <h3 class="mt-5">@Loc["Account Details"]</h3>
+        <table class="table table-striped w-75">
+            <thead>
+                <tr>
+                    <th scope="col">@Loc["Date"]</th>
+                    <th scope="col">@Loc["Amount"]</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(Data.Models.Movim movim in account.Movims)
+            {
+                <tr>
+                    <td scope="row">@movim.CreatedAt.ToShortDateString() @movim.CreatedAt.ToShortTimeString()</td>
+                    <td>@movim.Amount</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+</div>
 
 @code {
     [Parameter]
@@ -54,7 +62,7 @@
     public EventCallback SessionStatusEvent { get; set; }
 
 
-    private GetAccountResponse? account;
+    private Data.Models.AccountDetails? account;
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,7 +77,10 @@
             return;
         account = result.Item2;
         StateHasChanged();
-
+    }
+    protected void RedirectToAccounts()
+    {
+        _navigationManager.NavigateTo("/Accounts");
     }
 
 }

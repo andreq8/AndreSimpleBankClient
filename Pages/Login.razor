@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject UsersService _usersService
@@ -18,17 +19,19 @@
             </Authorized>
             <NotAuthorized Context="authContext">
                 <h2 class="text-center mb-3">Login</h2>
-                <EditForm Model="@loginUser" OnSubmit="@LoginMethod"> 
+                <EditForm Model="@loginUser" OnSubmit="@LoginMethod">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
                     <p>
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1">Username</span>
-                          <InputText type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Username"/>
+                            <span class="input-group-text" id="basic-addon1">Username</span>
+                            <InputText type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Username"/>
                         </div>
                     </p>
                     <p>
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1">Password</span>
-                          <InputText type="Password" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Password"/>
+                            <span class="input-group-text" id="basic-addon1">Password</span>
+                            <InputText type="Password" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Password"/>
                         </div>
                     </p>
                     <button class="btn btn-outline-dark"type="submit">Login </button>
@@ -39,15 +42,12 @@
     </div>
     @if(response.Item1 == false)
     {
-        <div class="col-5 border m-2 border-opacity-25 bg-light bg-gradient">
-            @response.Item3
-        </div>
     }
 </div>
 
 
 @code {
-    public LoginUserRequest loginUser { get; set; } = new();
+    public User loginUser { get; set; } = new();
     private (bool, LoginUserResponse?, string?) response;
 
     public async Task LoginMethod()

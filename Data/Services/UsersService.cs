@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using OpenBankClient.Data.Models;
 using OpenBankClient.Data.Providers;
 using OpenBankClient.Data.Services.Base;
 
@@ -11,31 +13,36 @@ namespace OpenBankClient.Data.Services
         private readonly ProtectedLocalStorage _localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILogger<UsersService> _logger;
-        public UsersService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<UsersService> logger, AuthenticationStateProvider authenticationStateProvider) 
+        private IMapper _mapper;
+        public UsersService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<UsersService> logger, AuthenticationStateProvider authenticationStateProvider, IMapper mapper) 
             : base(httpClient, localStorage)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
             _logger = logger;
             _authenticationStateProvider = authenticationStateProvider;
+            _mapper = mapper;
     }
-        public async Task<(bool, string?)> RegisterUserAsync(CreateUserRequest user)
+        public async Task<(bool, string?)> RegisterUserAsync(CreateUser user)
         {
             try
             {
-                var response = await _httpClient.UsersAsync(user);
+                var createUserRequest = _mapper.Map<CreateUser,CreateUserRequest>(user);
+                var response = await _httpClient.UsersAsync(createUserRequest);
+                _logger.LogInformation("user created");
                 return (true, "User registered");
             }
             catch(ApiException ex)
             {
                 var response = HandleApiException(ex);
-                return (false, response);
+                return (false, response.Item2);
             }
         }
-        public async Task<(bool, LoginUserResponse?, string?)> LoginAsync(LoginUserRequest loginRequest)
+        public async Task<(bool, LoginUserResponse?, string?)> LoginAsync(User user)
         {
             try
             {
+                var loginRequest = _mapper.Map<LoginUserRequest>(user);
                 var response = await _httpClient.LoginAsync(loginRequest);
                 await _localStorage.SetAsync("token", response.AccessToken);
                 await _localStorage.SetAsync("refreshToken", response.RefreshToken);
@@ -45,7 +52,7 @@ namespace OpenBankClient.Data.Services
             catch (ApiException ex)
             {
                 var response = HandleApiException(ex);
-                return (false, null, response);
+                return (false, null, response.Item2);
             }
         }
         public async Task LogoutAsync()
@@ -72,7 +79,7 @@ namespace OpenBankClient.Data.Services
             catch(ApiException ex)
             {
                 var response = HandleApiException(ex);
-                return (false, response);
+                return (false, response.Item2);
             }
 
         }

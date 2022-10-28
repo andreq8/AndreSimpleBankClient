@@ -3,6 +3,7 @@
 @inject ProtectedLocalStorage _localStorage
 @inject NavigationManager navigationManager
 @inject UsersService usersService
+@inject IStringLocalizer<UserCard> Loc
 
 <div class="row bg-white py-3 rounded-pill">
     <div class="col-5">
@@ -11,7 +12,7 @@
     <div class="col-7 d-flex justify-content-center">
         <div>
             <h5 class="card-title">@userLoggedIn</h5>
-            <button class="btn btn-sm btn-primary" @onclick="Logout">LogOut</button>
+            <button class="btn btn-sm btn-primary" @onclick="Logout">@Loc["Logout"]</button>
         </div>
     </div>
 </div>

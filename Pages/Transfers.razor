@@ -3,6 +3,7 @@
 @inject AccountsService _accountsService
 @inject TransfersService _transfersService
 @inject ILogger<Transfers> _logger
+@using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 
@@ -10,10 +11,10 @@
     @if(accounts != null)
     {
         <div class="row w-50 mt-5 shadow-lg p-5 border m-2 border-opacity-25">
-             <EditForm Model="@transferRequest" OnSubmit="@MakeTransfer">
+             <EditForm Model="@transfer" OnSubmit="@MakeTransfer">
                  <div class="input-group mb-3">
-                    <select class="form-select" aria-label="accountSelect" id="accountSelect" @bind="transferRequest.FromAccount">
-                        @foreach(AccountResponse account in accounts)
+                    <select class="form-select" aria-label="accountSelect" id="accountSelect" @bind="transfer.FromAccount">
+                        @foreach(Account account in accounts)
                         {
                             <option value="@account.Id">@account.Id</option>
                         }
@@ -22,11 +23,11 @@
                  </div>
                 <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Transfer to account nr</label>
-                    <input @bind-value="transferRequest.ToAccount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="account number">
+                    <input @bind-value="transfer.ToAccount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="account number">
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Amount</label>
-                    <input @bind-value="transferRequest.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="amount">
+                    <input @bind-value="transfer.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="amount">
                 </div>
                 @if(OperationStatus != "Transfer Succeded")
                 {
@@ -53,9 +54,9 @@
     [CascadingParameter]
     public EventCallback SessionStatusEvent { get; set; }
 
-    private List<AccountResponse>? accounts;
+    private IList<Account>? accounts;
 
-    private TransferRequest transferRequest = new();
+    private Transfer transfer = new();
     private string OperationStatus = "";
     private string OperationError = "";
 
@@ -69,12 +70,12 @@
         }
         if (!response.Item1)
             return;
-        accounts = (List<AccountResponse>)response.Item2!;
+        accounts = response.Item2!;
         _logger.LogInformation("after renderer");
     }
     public async void MakeTransfer()
     {
-        var response = await _transfersService.Transfer(transferRequest);
+        var response = await _transfersService.Transfer(transfer);
         if(response.Item3 == "token expired")
         {
             await SessionStatusEvent.InvokeAsync();

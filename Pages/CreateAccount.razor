@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize]
 @page "/create-account"
+@using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
 @inject AccountsService _accountService
@@ -28,7 +29,7 @@
 
 
 @code {
-    private AccountRequest accountRequest = new();
+    private Data.Models.CreateAccount accountRequest = new();
 
     [CascadingParameter]
     public EventCallback SessionStatusEvent { get; set; }
