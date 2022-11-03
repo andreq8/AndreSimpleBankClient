@@ -3,9 +3,12 @@
 @using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
-@inject AccountsService _accountService
+@using OpenBankClient.Data.Services.Interfaces
+@inject IAccountsService _accountService
+@inject NavigationManager _navigationManager
+@inject IStringLocalizer<CreateAccount> Loc
 
-<h3>Create Account</h3>
+<h3>@Loc["Create Account"]</h3>
 
 <div class="row w-50 mt-5 shadow-lg p-5 border m-2 border-opacity-25">
     <EditForm Model="@accountRequest" OnSubmit="@SendAccountRequest">
@@ -16,13 +19,13 @@
                     <option value="@currency">@currency</option>
                 }
             </select>
-            <label class="input-group-text" for="accountSelect">Currency</label>
+            <label class="input-group-text" for="accountSelect">@Loc["Currency"]</label>
         </div>
         <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Amount</label>
+            <label for="exampleFormControlInput1" class="form-label">@Loc["Amount"]</label>
             <input @bind-value="accountRequest.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="0">
         </div>
-        <button class="btn btn-outline-dark" type="submit">Create account</button>
+        <button class="btn btn-outline-dark" type="submit">@Loc["Create Account"]</button>
     </EditForm>
 
 </div>
@@ -47,5 +50,6 @@
             return;
 
         StateHasChanged();
+        _navigationManager.NavigateTo("/accounts");
     }
 }

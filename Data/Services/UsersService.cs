@@ -4,17 +4,18 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OpenBankClient.Data.Models;
 using OpenBankClient.Data.Providers;
 using OpenBankClient.Data.Services.Base;
+using OpenBankClient.Data.Services.Interfaces;
 
 namespace OpenBankClient.Data.Services
 {
-    public class UsersService : BaseService
+    public class UsersService : BaseService, IUsersService
     {
         private readonly IClient _httpClient;
         private readonly ProtectedLocalStorage _localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILogger<UsersService> _logger;
         private IMapper _mapper;
-        public UsersService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<UsersService> logger, AuthenticationStateProvider authenticationStateProvider, IMapper mapper) 
+        public UsersService(IClient httpClient, ProtectedLocalStorage localStorage, ILogger<UsersService> logger, AuthenticationStateProvider authenticationStateProvider, IMapper mapper)
             : base(httpClient, localStorage)
         {
             _httpClient = httpClient;
@@ -22,17 +23,17 @@ namespace OpenBankClient.Data.Services
             _logger = logger;
             _authenticationStateProvider = authenticationStateProvider;
             _mapper = mapper;
-    }
+        }
         public async Task<(bool, string?)> RegisterUserAsync(CreateUser user)
         {
             try
             {
-                var createUserRequest = _mapper.Map<CreateUser,CreateUserRequest>(user);
+                var createUserRequest = _mapper.Map<CreateUser, CreateUserRequest>(user);
                 var response = await _httpClient.UsersAsync(createUserRequest);
                 _logger.LogInformation("user created");
                 return (true, "User registered");
             }
-            catch(ApiException ex)
+            catch (ApiException ex)
             {
                 var response = HandleApiException(ex);
                 return (false, response.Item2);
@@ -76,7 +77,7 @@ namespace OpenBankClient.Data.Services
                 await _localStorage.SetAsync("refreshToken", response.RefreshToken);
                 return (true, null);
             }
-            catch(ApiException ex)
+            catch (ApiException ex)
             {
                 var response = HandleApiException(ex);
                 return (false, response.Item2);

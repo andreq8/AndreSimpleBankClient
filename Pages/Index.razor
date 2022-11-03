@@ -1,12 +1,13 @@
 ﻿@page "/"
+@inject IStringLocalizer<Index> Loc
 
 <div class="row">
-    <h1>Welcome to OpenBank</h1>
+    <h1>@Loc["Greeting"]</h1>
 </div>
 <div class="row mt-5">
-    <p>Please click <a href="" @onclick="PopUpRegister">here</a> to register </p>
-    <p>or</p>
-    <p><a href="" @onclick="PopUpLogin">Login</a> to your account</p>
+    <p>@Loc["message part1"] <a href="" @onclick="PopUpRegister">@Loc["message link"]</a> @Loc["message part2"] </p>
+    <p>@Loc["Or"]</p>
+    <p><a href="" @onclick="PopUpLogin">@Loc["Message2 link"]</a> @Loc["Message2 text"]</p>
 </div>
 <div class="row">
     @if(@popUpEnabled)
