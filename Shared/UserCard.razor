@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Interfaces
 @inject ProtectedLocalStorage _localStorage
 @inject NavigationManager navigationManager
-@inject UsersService usersService
+@inject IUsersService usersService
 @inject IStringLocalizer<UserCard> Loc
 
 <div class="row bg-white py-3 rounded-pill">

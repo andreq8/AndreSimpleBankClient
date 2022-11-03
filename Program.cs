@@ -4,6 +4,7 @@ using OpenBankClient.Data;
 using OpenBankClient.Data.Providers;
 using OpenBankClient.Data.Services;
 using OpenBankClient.Data.Services.Base;
+using OpenBankClient.Data.Services.Interfaces;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddTransient<UsersService>();
-builder.Services.AddTransient<AccountsService>();
-builder.Services.AddTransient<TransfersService>();
+builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddTransient<IAccountsService, AccountsService>();
+builder.Services.AddTransient<ITransfersService, TransfersService>();
 builder.Services.AddTransient<IClient, Client>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7268/") });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();

@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OpenBankClient.Data.Models;
 using OpenBankClient.Data.Services.Base;
+using OpenBankClient.Data.Services.Interfaces;
 
 namespace OpenBankClient.Data.Services
 {
-    public class TransfersService : BaseService
+    public class TransfersService : BaseService, ITransfersService
     {
         private readonly IClient _httpClient;
         private readonly ProtectedLocalStorage _localStorage;
         private IMapper _mapper;
-        public TransfersService(IClient httpClient, ProtectedLocalStorage _localStorage, IMapper mapper) 
+        public TransfersService(IClient httpClient, ProtectedLocalStorage _localStorage, IMapper mapper)
             : base(httpClient, _localStorage)
         {
             _httpClient = httpClient;
@@ -33,6 +34,6 @@ namespace OpenBankClient.Data.Services
                 return (false, response.Item1, response.Item2);
             }
         }
-        
+
     }
 }

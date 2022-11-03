@@ -1,13 +1,15 @@
 ﻿@attribute [Authorize]
 @page "/transfers"
-@inject AccountsService _accountsService
-@inject TransfersService _transfersService
+@inject IAccountsService _accountsService
+@inject ITransfersService _transfersService
 @inject ILogger<Transfers> _logger
+@inject IStringLocalizer<Transfers> Loc
 @using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
+@using OpenBankClient.Data.Services.Interfaces
 
-    <h3>Transfers</h3>
+    <h3>@Loc["Transfers"]</h3>
     @if(accounts != null)
     {
         <div class="row w-50 mt-5 shadow-lg p-5 border m-2 border-opacity-25">
@@ -19,19 +21,19 @@
                             <option value="@account.Id">@account.Id</option>
                         }
                     </select>
-                    <label class="input-group-text" for="accountSelect">Account</label>
+                    <label class="input-group-text" for="accountSelect">@Loc["Account"]</label>
                  </div>
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Transfer to account nr</label>
+                    <label for="exampleFormControlInput1" class="form-label">@Loc["Transfer to"]</label>
                     <input @bind-value="transfer.ToAccount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="account number">
                 </div>
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Amount</label>
+                    <label for="exampleFormControlInput1" class="form-label">@Loc["Amount"]</label>
                     <input @bind-value="transfer.Amount" type="number" class="form-control" id="exampleFormControlInput1" placeholder="amount">
                 </div>
                 @if(OperationStatus != "Transfer Succeded")
                 {
-                    <button class="btn btn-outline-dark"type="submit">Transfer </button>
+                    <button class="btn btn-outline-dark"type="submit">@Loc["Transfer"] </button>
                 }
                 @if(OperationStatus == "Transfer Succeded")
                 {

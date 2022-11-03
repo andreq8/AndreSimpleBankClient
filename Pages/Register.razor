@@ -2,12 +2,14 @@
 @using OpenBankClient.Data.Models
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
-@inject UsersService _usersService
+@using OpenBankClient.Data.Services.Interfaces
+@inject IUsersService _usersService
 @inject ILogger<Register> _logger
+@inject IStringLocalizer<Register> Loc
 
 <div class="row">
     <div class="col-5 shadow-lg p-5 border m-2 border-opacity-25 bg-light bg-gradient">
-        <h2 class="text-center mb-3">Register</h2>
+        <h2 class="text-center mb-3">@Loc["Register"]</h2>
         <EditForm Model="@userRequest" OnSubmit="@SubmitForm"> 
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -19,23 +21,23 @@
             </p>
             <p>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon2">Password</span>
+                    <span class="input-group-text" id="basic-addon2">@Loc["Password"]</span>
                     <InputText type="password" class="form-control" @bind-Value="userRequest.Password" />
                 </div>
             </p>
             <p>
                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon2">Username</span>
+                    <span class="input-group-text" id="basic-addon2">@Loc["Username"]</span>
                     <InputText type="text" class="form-control" @bind-Value="userRequest.UserName" />
                 </div>
             </p>
             <p>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon2">Full Name</span>
+                    <span class="input-group-text" id="basic-addon2">@Loc["Full name"]</span>
                     <InputText type="text" class="form-control" @bind-Value="userRequest.FullName" />
                 </div>
             </p>
-            <button class="btn btn-outline-dark"type="submit">Register</button>
+            <button class="btn btn-outline-dark"type="submit">@Loc["Register"]</button>
         </EditForm>
         @if(OperationStatus == "User registered")
         {

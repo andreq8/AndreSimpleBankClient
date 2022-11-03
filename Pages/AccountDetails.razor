@@ -1,12 +1,13 @@
 ﻿@attribute [Authorize]
 @using OpenBankClient.Data.Services
 @using OpenBankClient.Data.Services.Base
+@using OpenBankClient.Data.Services.Interfaces
 @inject IStringLocalizer<AccountDetails> Loc
 @inject NavigationManager _navigationManager
+@inject IAccountsService _accountService
 
 @page "/account/{id:int}"
 
-@inject AccountsService _accountService
 <div class="row mb-2">
     <div class="col-8"></div>
     <div class="col-2">
