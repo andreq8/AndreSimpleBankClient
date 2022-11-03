@@ -1,19 +1,37 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inherits LayoutComponentBase
+@inject ProtectedLocalStorage _localStorage
 
 <PageTitle>OpenBankClient</PageTitle>
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+            <NavMenu/>
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <div class="top-row ">
+            <CultureSelector />
         </div>
 
-        <article class="content px-4">
-            @Body
+        <article   class="container-fluid p-4 align-middle">
+                <CascadingValue Value="@sessionStatusEvent">
+                    <RenewSession SessionExpired="@SessionExpired"></RenewSession>
+                    @Body
+                </CascadingValue>
         </article>
+        
     </main>
 </div>
+
+@code{
+    EventCallback sessionStatusEvent => EventCallback.Factory.Create(this, ChangeSessionStatus);
+
+    public bool SessionExpired { get; set; }
+
+    public void ChangeSessionStatus()
+    {
+        SessionExpired = true;
+        StateHasChanged();
+    }
+}

@@ -1,9 +1,41 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<div class="row">
+    <h1>Welcome to OpenBank</h1>
+</div>
+<div class="row mt-5">
+    <p>Please click <a href="" @onclick="PopUpRegister">here</a> to register </p>
+    <p>or</p>
+    <p><a href="" @onclick="PopUpLogin">Login</a> to your account</p>
+</div>
+<div class="row">
+    @if(@popUpEnabled)
+    {
+        if(popUp == "login")
+        {
+            <Login></Login>
+        }
+        if(popUp == "register")
+        {
+            <Register></Register>
+        }
+    }
+</div>
 
-<h1>Hello, world!</h1>
+@code {
+    private bool popUpEnabled = false;
+    private string popUp = "";
+    private void PopUpLogin()
+    {
+        popUpEnabled = true;
+        popUp = "login";
+        StateHasChanged();
+    }
+        private void PopUpRegister()
+    {
+        popUpEnabled = true;
+        popUp = "register";
+        StateHasChanged();
+    }
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+}

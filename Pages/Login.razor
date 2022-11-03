@@ -1,0 +1,64 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using OpenBankClient.Data.Models
+@using OpenBankClient.Data.Services
+@using OpenBankClient.Data.Services.Base
+@inject UsersService _usersService
+@inject NavigationManager Navigation
+@inject ProtectedLocalStorage _localStorage
+
+<div class="row">
+    <div class="col-5 shadow-lg p-5 border m-2 border-opacity-25 bg-light bg-gradient">
+        <AuthorizeView>
+            <Authorized>
+                <h2 class="text-center mb-3">Login</h2>
+                <p>You are logged in</p>
+                <div class="w-50">
+                    <UserCard></UserCard>
+                </div>
+            </Authorized>
+            <NotAuthorized Context="authContext">
+                <h2 class="text-center mb-3">Login</h2>
+                <EditForm Model="@loginUser" OnSubmit="@LoginMethod">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Username</span>
+                            <InputText type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Username"/>
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Password</span>
+                            <InputText type="Password" class="form-control" aria-label="Username" aria-describedby="basic-addon1" @bind-Value="loginUser.Password"/>
+                        </div>
+                    </p>
+                    <button class="btn btn-outline-dark"type="submit">Login </button>
+
+                </EditForm>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+    @if(response.Item1 == false)
+    {
+    }
+</div>
+
+
+@code {
+    public User loginUser { get; set; } = new();
+    private (bool, LoginUserResponse?, string?) response;
+
+    public async Task LoginMethod()
+    {
+        response = await _usersService.LoginAsync(loginUser);
+        if (!response.Item1)
+        {
+            StateHasChanged();
+            return;
+        }
+        Navigation.NavigateTo("/accounts");
+    }
+
+}
