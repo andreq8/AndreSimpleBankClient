@@ -31,5 +31,9 @@ jobs:
       inputs:
         command: 'publish'
         publishWebProjects: true
-        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-  
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/zip'
+        zipAfterPublish: True
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact (AndreSimpleBank)'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
