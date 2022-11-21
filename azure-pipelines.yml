@@ -16,20 +16,22 @@ jobs:
 
   steps:
     - task: DotNetCoreCLI@2
+      displayName: Restore
       inputs:
         command: 'restore'
         projects: 'OpenBankClient.csproj'
         feedsToUse: 'select'
     - task: DotNetCoreCLI@2
+      displayName: Build
       inputs:
         command: 'build'
         projects: 'OpenBankClient.csproj'
         arguments: '--configuration $(BuildConfiguration)'
     - task: DotNetCoreCLI@2
+      displayName: Publish
       inputs:
         command: 'publish'
         publishWebProjects: true
-        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/zip'
         workingDirectory: 'OpenBankClient.csproj'
-        zipAfterPublish: true
   
