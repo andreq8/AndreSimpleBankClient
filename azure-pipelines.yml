@@ -32,6 +32,6 @@ jobs:
       inputs:
         command: 'publish'
         publishWebProjects: true
-        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/zip'
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
         workingDirectory: 'OpenBankClient.csproj'
   
