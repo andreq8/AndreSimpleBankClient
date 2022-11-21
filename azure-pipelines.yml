@@ -1,0 +1,35 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger: "none"
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- job: Client
+  displayName: 'Build Web App'
+  pool:
+    vmImage: "windows-2022"
+
+  steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: 'OpenBankClient.csproj'
+        feedsToUse: 'select'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: 'OpenBankClient.csproj'
+        arguments: '--configuration $(BuildConfiguration)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+        workingDirectory: 'OpenBankClient.csproj'
+        zipAfterPublish: true
+  
