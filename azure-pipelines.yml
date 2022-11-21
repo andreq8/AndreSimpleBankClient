@@ -12,7 +12,7 @@ jobs:
 - job: Client
   displayName: 'Build Web App'
   pool:
-    vmImage: "windows-2022"
+    name: Default
 
   steps:
     - task: DotNetCoreCLI@2
