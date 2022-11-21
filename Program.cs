@@ -16,7 +16,7 @@ builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IAccountsService, AccountsService>();
 builder.Services.AddTransient<ITransfersService, TransfersService>();
 builder.Services.AddTransient<IClient, Client>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7268/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]) });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddLocalization();
