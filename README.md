@@ -1,1 +1,1 @@
-# OpenBankClient
+# AndreSimpleBankClient
